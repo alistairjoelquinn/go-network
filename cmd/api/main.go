@@ -4,11 +4,26 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/session"
 )
 
 func main() {
 	app := fiber.New(fiber.Config{
 		ErrorHandler: routeErrorHandler,
+	})
+	store := session.New()
+
+	app.Use("/", func(c *fiber.Ctx) error {
+		sess, err := store.Get(c)
+		if err != nil {
+			panic(err)
+		}
+
+		sess.Set("userId", 56)
+		userId := sess.Get("userId")
+
+		log.Println("session value:", userId)
+		return c.Next()
 	})
 
 	app.Static("/", "./public")
