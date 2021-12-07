@@ -11,12 +11,17 @@ func (app *application) serveHTML(w http.ResponseWriter, r *http.Request, _ http
 	http.ServeFile(w, r, "index.html")
 }
 
+func (app *application) serveFavicon(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	http.ServeFile(w, r, "favicon.ico")
+}
+
 func (app *application) serveApp(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	log.Println("bundle request", r.URL.Path[1:])
 	http.ServeFile(w, r, r.URL.Path[1:])
 }
 
 func (app *application) checkUserStatus(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	log.Println("bundle request", r.URL.Path[1:])
-	http.ServeFile(w, r, r.URL.Path[1:])
+	testStatus := 34
+
+	app.jsonRespond(w, 200, testStatus, "userId")
 }

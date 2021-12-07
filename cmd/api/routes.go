@@ -8,8 +8,10 @@ import (
 
 func (app *application) routes() http.Handler {
 	router := httprouter.New()
+	router.ServeFiles("/public/*filepath", http.Dir("public"))
 
 	router.GET("/", app.serveHTML)
+	router.GET("/favicon.ico", app.serveFavicon)
 	router.GET("/bundle.js", app.serveApp)
 
 	// API routes

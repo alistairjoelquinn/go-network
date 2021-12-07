@@ -13,7 +13,7 @@ type application struct {
 
 func main() {
 	app := &application{
-		port: 3001,
+		port: 3000,
 	}
 
 	server := &http.Server{
