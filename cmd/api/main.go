@@ -13,6 +13,12 @@ func main() {
 
 	app.Static("/", "./public")
 
+	auth := app.Group("/auth")
+	auth.Get("/user/id.json", checkUserStatus)
+
+	user := app.Group(("/user"))
+	user.Get("/get-data", getUserData)
+
 	log.Fatal(app.Listen(":3001"))
 }
 
