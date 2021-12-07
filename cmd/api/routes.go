@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -10,9 +9,11 @@ import (
 func (app *application) routes() http.Handler {
 	router := httprouter.New()
 
-	router.GET("/", func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-		fmt.Fprint(w, "home page")
-	})
+	router.GET("/", app.serveHTML)
+	router.GET("/bundle.js", app.serveApp)
+
+	// API routes
+	router.GET("/api/auth/id", app.checkUserStatus)
 
 	return router
 }
