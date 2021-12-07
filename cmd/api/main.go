@@ -1,33 +1,21 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"net/http"
-	"time"
+
+	"github.com/gofiber/fiber/v2"
 )
 
-type application struct {
-	port int
+func main() {
+	app := fiber.New(fiber.Config{
+		ErrorHandler: routeErrorHandler,
+	})
+
+	app.Static("/", "./public")
+
+	log.Fatal(app.Listen(":3001"))
 }
 
-func main() {
-	app := &application{
-		port: 3000,
-	}
-
-	server := &http.Server{
-		Addr:         fmt.Sprintf(":%d", app.port),
-		Handler:      app.routes(),
-		IdleTimeout:  2 * time.Minute,
-		ReadTimeout:  6 * time.Second,
-		WriteTimeout: 20 * time.Second,
-	}
-
-	log.Println("Server running on port", app.port)
-
-	err := server.ListenAndServe()
-	if err != nil {
-		log.Fatal("ERROR:", err)
-	}
+func routeErrorHandler(c *fiber.Ctx, err error) error {
+	return c.Status(404).SendString("Error in route")
 }
