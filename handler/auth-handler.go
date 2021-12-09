@@ -92,8 +92,49 @@ func CreateNewUser(c *fiber.Ctx) error {
 }
 
 func LogUserIn(c *fiber.Ctx) error {
-	log.Println("log user in")
-	return nil
+	l := new(model.NewUser)
+
+	if err := c.BodyParser(l); err != nil {
+		return err
+	}
+
+	loginVals, err := database.DBModel.GetUserPasswordFromEmail(l.Email)
+	if err != nil {
+		return c.JSON(fiber.Map{
+			"success": "false",
+		})
+	}
+
+	log.Println(loginVals.HashedPassword, l.Password)
+
+	err = bcrypt.CompareHashAndPassword([]byte(loginVals.HashedPassword), []byte(l.Password))
+	if err != nil {
+		return c.JSON(fiber.Map{
+			"success": "false",
+		})
+	}
+
+	var claims jwt.Claims
+	claims.Subject = fmt.Sprint(loginVals.ID)
+	claims.Issued = jwt.NewNumericTime(time.Now())
+	claims.NotBefore = jwt.NewNumericTime(time.Now())
+	claims.Expires = jwt.NewNumericTime(time.Now().Add(24 * time.Hour))
+	claims.Issuer = "localhost:3000"
+	claims.Audiences = []string{"localhost:3000"}
+
+	jwtBytes, err := claims.HMACSign(jwt.HS256, []byte(tokenSecret.value))
+	if err != nil {
+		return c.JSON(fiber.Map{
+			"success": "false",
+		})
+	}
+
+	cookie := new(fiber.Cookie)
+	cookie.Name = "token"
+	cookie.Value = string(jwtBytes)
+	c.Cookie(cookie)
+
+	return c.JSON(fiber.Map{"success": "true"})
 }
 
 func LogUserOut(c *fiber.Ctx) error {

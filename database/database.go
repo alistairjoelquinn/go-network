@@ -3,10 +3,17 @@ package database
 import (
 	"context"
 	"database/sql"
+	"log"
 	"time"
+
+	"github.com/alistairjoelquinn/go-network/model"
 )
 
 // DB gorm connector
+type Login struct {
+	hashedPassword string
+	id             string
+}
 type DB struct {
 	db *sql.DB
 }
@@ -44,4 +51,34 @@ func (m DB) AddNewUser(first string, last string, email string, hashedPass strin
 	}
 
 	return id, nil
+}
+
+func (m DB) GetUserPasswordFromEmail(email string) (*model.LogUserIn, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `
+		SELECT password, id FROM users 
+		WHERE email = $1
+	`
+
+	var response model.LogUserIn
+
+	rows, err := m.db.QueryContext(ctx, query, email)
+	if err != nil {
+		return &response, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		if err := rows.Scan(
+			&response.HashedPassword,
+			&response.ID,
+		); err != nil {
+			log.Println("response", response)
+			return &response, err
+		}
+	}
+
+	return &response, nil
 }
