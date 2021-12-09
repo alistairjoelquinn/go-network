@@ -6,11 +6,15 @@ import (
 
 	"github.com/alistairjoelquinn/go-network/database"
 	"github.com/alistairjoelquinn/go-network/model"
+	"github.com/alistairjoelquinn/go-network/util"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 	"golang.org/x/crypto/bcrypt"
-	"honnef.co/go/tools/config"
 )
+
+type jwtBuild struct {
+	value string
+}
 
 func CheckUserStatus(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
@@ -30,7 +34,7 @@ func CreateNewUser(c *fiber.Ctx) error {
 		panic(err)
 	}
 
-	err = database.DBModel.AddNewUser(n.First, n.Last, n.Email, string(hashedPassword))
+	id, err := database.DBModel.AddNewUser(n.First, n.Last, n.Email, string(hashedPassword))
 	if err != nil {
 		return c.JSON(fiber.Map{
 			"success": "false",
@@ -40,16 +44,26 @@ func CreateNewUser(c *fiber.Ctx) error {
 	token := jwt.New(jwt.SigningMethodHS256)
 
 	claims := token.Claims.(jwt.MapClaims)
-	claims["username"] = ud.Username
-	claims["user_id"] = ud.ID
+	claims["firstname"] = n.First
+	claims["lastname"] = n.Last
+	claims["user_id"] = id
 	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
 
-	t, err := token.SignedString([]byte(config.Config("SECRET")))
+	tokenSecret := jwtBuild{
+		value: util.Env("JWT_SECRET"),
+	}
+
+	t, err := token.SignedString([]byte(tokenSecret.value))
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
-	return c.JSON(fiber.Map{"status": "success", "message": "Success login", "data": t})
+	cookie := new(fiber.Cookie)
+	cookie.Name = "token"
+	cookie.Value = t
+	c.Cookie(cookie)
+
+	return c.JSON(fiber.Map{"success": "true"})
 }
 
 func LogUserIn(c *fiber.Ctx) error {
