@@ -5,13 +5,18 @@ import (
 
 	"github.com/alistairjoelquinn/go-network/handlers"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/encryptcookie"
 )
 
 func main() {
 	app := fiber.New(fiber.Config{
 		ErrorHandler: routeErrorHandler,
 	})
+	cryptoKey := encryptcookie.GenerateKey()
 
+	app.Use(encryptcookie.New(encryptcookie.Config{
+		Key: cryptoKey,
+	}))
 	app.Static("/", "./public")
 
 	auth := app.Group("/auth")
