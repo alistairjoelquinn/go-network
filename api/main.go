@@ -24,10 +24,15 @@ func main() {
 
 	user := app.Group(("/user"))
 	user.Get("/get-data", handlers.GetUserData)
+	user.Get("/upload", handlers.UploaderUserImage)
+	user.Get("/set-bio", handlers.SetUserBio)
+	user.Get("/recent-users", handlers.GetRecentUsers)
+	user.Get("/user-search/:q", handlers.SearchForUsers)
+	user.Get("/other-user/:id", handlers.GetOtherUser)
 
-	friendship := app.Group(("/friendship"))
+	// friendship := app.Group(("/friendship"))
 
-	log.Fatal(app.Listen(":3001"))
+	log.Fatal(app.Listen(":3000"))
 }
 
 func routeErrorHandler(c *fiber.Ctx, err error) error {
