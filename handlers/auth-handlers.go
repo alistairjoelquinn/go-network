@@ -2,17 +2,11 @@ package handlers
 
 import (
 	"log"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func CheckUserStatus(c *fiber.Ctx) error {
-	userIdCookie := new(fiber.Cookie)
-	userIdCookie.Name = "userId"
-	userIdCookie.Value = "45"
-	userIdCookie.Expires = time.Now().Add(72 * time.Hour)
-	c.Cookie(userIdCookie)
 
 	return c.JSON(fiber.Map{
 		"userId": 45,
