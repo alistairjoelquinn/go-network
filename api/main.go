@@ -1,7 +1,10 @@
 package main
 
 import (
+	"context"
+	"database/sql"
 	"log"
+	"time"
 
 	"github.com/alistairjoelquinn/go-network/handlers"
 	"github.com/gofiber/fiber/v2"
@@ -9,6 +12,12 @@ import (
 )
 
 func main() {
+	db, err := connectToDB()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
 	app := fiber.New(fiber.Config{
 		ErrorHandler: routeErrorHandler,
 	})
@@ -47,4 +56,20 @@ func main() {
 
 func routeErrorHandler(c *fiber.Ctx, err error) error {
 	return c.Status(404).SendString("Error in route")
+}
+
+func connectToDB() (*sql.DB, error) {
+	db, err := sql.Open("postgres", "postgres:postgres:postgres@localhost:5432/sn-typescript")
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := db.PingContext(ctx); err != nil {
+		return nil, err
+	}
+
+	return db, nil
 }
