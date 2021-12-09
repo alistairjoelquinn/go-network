@@ -3,13 +3,26 @@ package database
 import (
 	"context"
 	"database/sql"
+	"log"
 	"time"
+
+	"github.com/alistairjoelquinn/go-network/models"
 )
 
 // DB gorm connector
-var DB *sql.DB
+type DB struct {
+	db *sql.DB
+}
 
-func AddNewUser(first string, last string, email string, passHash string) error {
+var DBModel DB
+
+func ModelInit(db *sql.DB) DB {
+	DBModel.db = db
+
+	return DBModel
+}
+
+func (m DB) AddNewUser(person *models.NewUser) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
@@ -18,12 +31,9 @@ func AddNewUser(first string, last string, email string, passHash string) error 
 		VALUES ($1, $2, $3, $4)
 		RETURNING first, last, id
 	`
-
-	queryParams := []string{first, last, email, passHash}
-
-	_, err := DB.ExecContext(ctx, query, queryParams)
-
+	_, err := m.db.QueryContext(ctx, query, person.First, person.Last, person.Email, person.Password)
 	if err != nil {
+		log.Println("error", err)
 		return err
 	}
 

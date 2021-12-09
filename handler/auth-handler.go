@@ -3,20 +3,36 @@ package handler
 import (
 	"log"
 
+	"github.com/alistairjoelquinn/go-network/database"
+	"github.com/alistairjoelquinn/go-network/models"
 	"github.com/gofiber/fiber/v2"
 )
 
 func CheckUserStatus(c *fiber.Ctx) error {
-	log.Println("COOKIE", c.Cookies("userId"))
-
 	return c.JSON(fiber.Map{
-		"userId": 45,
+		// "userId": 45,
 	})
 }
 
 func CreateNewUser(c *fiber.Ctx) error {
-	log.Println("create new user")
-	return nil
+	n := new(models.NewUser)
+
+	if err := c.BodyParser(n); err != nil {
+		return err
+	}
+
+	err := database.DBModel.AddNewUser(n)
+	if err != nil {
+		log.Println("Failed")
+		return c.JSON(fiber.Map{
+			"success": "false",
+		})
+	}
+	log.Println("succeedededed")
+
+	return c.JSON(fiber.Map{
+		"success": "true",
+	})
 }
 
 func LogUserIn(c *fiber.Ctx) error {
