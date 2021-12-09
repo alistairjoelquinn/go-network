@@ -1,14 +1,16 @@
 package handler
 
 import (
+	"fmt"
 	"log"
+	"strconv"
 	"time"
 
 	"github.com/alistairjoelquinn/go-network/database"
 	"github.com/alistairjoelquinn/go-network/model"
 	"github.com/alistairjoelquinn/go-network/util"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
+	"github.com/pascaldekloe/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -16,9 +18,34 @@ type jwtBuild struct {
 	value string
 }
 
+var tokenSecret = jwtBuild{
+	value: util.Env("JWT_SECRET"),
+}
+
 func CheckUserStatus(c *fiber.Ctx) error {
+	token := c.Cookies("token", "")
+	if token == "" {
+		return c.JSON(fiber.Map{
+			"userId": "",
+		})
+	}
+
+	claims, err := jwt.HMACCheck([]byte(token), []byte(tokenSecret.value))
+	if err != nil || !claims.Valid(time.Now()) || !claims.AcceptAudience("localhost:3000") || claims.Issuer != "localhost:3000" {
+		return c.JSON(fiber.Map{
+			"userId": "",
+		})
+	}
+
+	userId, err := strconv.ParseInt(claims.Subject, 10, 64)
+	if err != nil {
+		return c.JSON(fiber.Map{
+			"userId": "",
+		})
+	}
+
 	return c.JSON(fiber.Map{
-		// "userId": 45,
+		"userId": userId,
 	})
 }
 
@@ -41,26 +68,24 @@ func CreateNewUser(c *fiber.Ctx) error {
 		})
 	}
 
-	token := jwt.New(jwt.SigningMethodHS256)
+	var claims jwt.Claims
+	claims.Subject = fmt.Sprint(id)
+	claims.Issued = jwt.NewNumericTime(time.Now())
+	claims.NotBefore = jwt.NewNumericTime(time.Now())
+	claims.Expires = jwt.NewNumericTime(time.Now().Add(24 * time.Hour))
+	claims.Issuer = "localhost:3000"
+	claims.Audiences = []string{"localhost:3000"}
 
-	claims := token.Claims.(jwt.MapClaims)
-	claims["firstname"] = n.First
-	claims["lastname"] = n.Last
-	claims["user_id"] = id
-	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
-
-	tokenSecret := jwtBuild{
-		value: util.Env("JWT_SECRET"),
-	}
-
-	t, err := token.SignedString([]byte(tokenSecret.value))
+	jwtBytes, err := claims.HMACSign(jwt.HS256, []byte(tokenSecret.value))
 	if err != nil {
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.JSON(fiber.Map{
+			"success": "false",
+		})
 	}
 
 	cookie := new(fiber.Cookie)
 	cookie.Name = "token"
-	cookie.Value = t
+	cookie.Value = string(jwtBytes)
 	c.Cookie(cookie)
 
 	return c.JSON(fiber.Map{"success": "true"})
