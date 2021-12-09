@@ -4,10 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"time"
+
+	"github.com/alistairjoelquinn/go-network/util"
 )
 
 func ConnectToDB() (*sql.DB, error) {
-	db, err := sql.Open("postgres", "postgres://postgres:postgres@localhost:5432/sn-typescript?sslmode=disable")
+	db, err := sql.Open("postgres", util.Env("DB_URL"))
 	if err != nil {
 		return nil, err
 	}
