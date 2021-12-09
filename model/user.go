@@ -1,4 +1,4 @@
-package models
+package model
 
 type NewUser struct {
 	First    string `json:"first"`

@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/alistairjoelquinn/go-network/database"
-	"github.com/alistairjoelquinn/go-network/models"
+	"github.com/alistairjoelquinn/go-network/model"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -15,7 +15,7 @@ func CheckUserStatus(c *fiber.Ctx) error {
 }
 
 func CreateNewUser(c *fiber.Ctx) error {
-	n := new(models.NewUser)
+	n := new(model.NewUser)
 
 	if err := c.BodyParser(n); err != nil {
 		return err

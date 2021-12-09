@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/alistairjoelquinn/go-network/models"
+	"github.com/alistairjoelquinn/go-network/model"
 )
 
 // DB gorm connector
@@ -21,7 +21,7 @@ func ModelInit(db *sql.DB) DB {
 	return DBModel
 }
 
-func (m DB) AddNewUser(person *models.NewUser) error {
+func (m DB) AddNewUser(person *model.NewUser) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
