@@ -97,7 +97,7 @@ func LogUserIn(c *fiber.Ctx) error {
 }
 
 func LogUserOut(c *fiber.Ctx) error {
-	log.Println("log user out")
+	c.ClearCookie("token")
 	return nil
 }
 
