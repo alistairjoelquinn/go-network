@@ -1,4 +1,4 @@
-package handlers
+package handler
 
 import (
 	"log"
@@ -7,6 +7,7 @@ import (
 )
 
 func CheckUserStatus(c *fiber.Ctx) error {
+	log.Println("COOKIE", c.Cookies("userId"))
 
 	return c.JSON(fiber.Map{
 		"userId": 45,

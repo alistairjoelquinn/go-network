@@ -1,31 +1,31 @@
 package router
 
 import (
-	"github.com/alistairjoelquinn/go-network/handlers"
+	"github.com/alistairjoelquinn/go-network/handler"
 	"github.com/gofiber/fiber/v2"
 )
 
 func SetupRoutes(app *fiber.App) {
 	auth := app.Group("/auth")
-	auth.Get("/user/id.json", handlers.CheckUserStatus)
-	auth.Post("/register", handlers.CreateNewUser)
-	auth.Post("/login", handlers.LogUserIn)
-	auth.Get("/logout", handlers.LogUserOut)
-	auth.Get("/password-reset/email-check", handlers.CheckEmailForReset)
-	auth.Get("/password-reset/verify-code", handlers.VerifyAndResetUsersPassword)
+	auth.Get("/user/id.json", handler.CheckUserStatus)
+	auth.Post("/register", handler.CreateNewUser)
+	auth.Post("/login", handler.LogUserIn)
+	auth.Get("/logout", handler.LogUserOut)
+	auth.Get("/password-reset/email-check", handler.CheckEmailForReset)
+	auth.Get("/password-reset/verify-code", handler.VerifyAndResetUsersPassword)
 
 	user := app.Group(("/user"))
-	user.Get("/get-data", handlers.GetUserData)
-	user.Get("/upload", handlers.UploaderUserImage)
-	user.Get("/set-bio", handlers.SetUserBio)
-	user.Get("/recent-users", handlers.GetRecentUsers)
-	user.Get("/user-search/:q", handlers.SearchForUsers)
-	user.Get("/other-user/:id", handlers.GetOtherUser)
+	user.Get("/get-data", handler.GetUserData)
+	user.Get("/upload", handler.UploaderUserImage)
+	user.Get("/set-bio", handler.SetUserBio)
+	user.Get("/recent-users", handler.GetRecentUsers)
+	user.Get("/user-search/:q", handler.SearchForUsers)
+	user.Get("/other-user/:id", handler.GetOtherUser)
 
 	friendship := app.Group(("/friendship"))
-	friendship.Get("/get-initial-status/:id", handlers.GetInitialFrienshipStatus)
-	friendship.Post("/add-friend/:id", handlers.AddFriend)
-	friendship.Post("/accept-friend/:id", handlers.AcceptFriend)
-	friendship.Post("/end-friendship/:id", handlers.EndFriendship)
-	friendship.Get("/friends-list", handlers.GetFriendsList)
+	friendship.Get("/get-initial-status/:id", handler.GetInitialFrienshipStatus)
+	friendship.Post("/add-friend/:id", handler.AddFriend)
+	friendship.Post("/accept-friend/:id", handler.AcceptFriend)
+	friendship.Post("/end-friendship/:id", handler.EndFriendship)
+	friendship.Get("/friends-list", handler.GetFriendsList)
 }
