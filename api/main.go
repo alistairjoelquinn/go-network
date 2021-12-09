@@ -9,6 +9,7 @@ import (
 	"github.com/alistairjoelquinn/go-network/handlers"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/encryptcookie"
+	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -59,7 +60,7 @@ func routeErrorHandler(c *fiber.Ctx, err error) error {
 }
 
 func connectToDB() (*sql.DB, error) {
-	db, err := sql.Open("postgres", "postgres:postgres:postgres@localhost:5432/sn-typescript")
+	db, err := sql.Open("postgres", "postgres://postgres:postgres@localhost:5432/sn-typescript?sslmode=disable")
 	if err != nil {
 		return nil, err
 	}
