@@ -23,12 +23,10 @@ func CreateNewUser(c *fiber.Ctx) error {
 
 	err := database.DBModel.AddNewUser(n)
 	if err != nil {
-		log.Println("Failed")
 		return c.JSON(fiber.Map{
 			"success": "false",
 		})
 	}
-	log.Println("succeedededed")
 
 	return c.JSON(fiber.Map{
 		"success": "true",

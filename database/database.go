@@ -3,7 +3,6 @@ package database
 import (
 	"context"
 	"database/sql"
-	"log"
 	"time"
 
 	"github.com/alistairjoelquinn/go-network/models"
@@ -29,11 +28,9 @@ func (m DB) AddNewUser(person *models.NewUser) error {
 	query := `
 		INSERT INTO users (first, last, email, password)
 		VALUES ($1, $2, $3, $4)
-		RETURNING first, last, id
 	`
-	_, err := m.db.QueryContext(ctx, query, person.First, person.Last, person.Email, person.Password)
+	_, err := m.db.ExecContext(ctx, query, person.First, person.Last, person.Email, person.Password)
 	if err != nil {
-		log.Println("error", err)
 		return err
 	}
 
