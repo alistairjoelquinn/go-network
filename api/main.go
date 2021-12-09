@@ -30,7 +30,12 @@ func main() {
 	user.Get("/user-search/:q", handlers.SearchForUsers)
 	user.Get("/other-user/:id", handlers.GetOtherUser)
 
-	// friendship := app.Group(("/friendship"))
+	friendship := app.Group(("/friendship"))
+	friendship.Get("/get-initial-status/:id", handlers.GetInitialFrienshipStatus)
+	friendship.Post("/add-friend/:id", handlers.AddFriend)
+	friendship.Post("/accept-friend/:id", handlers.AcceptFriend)
+	friendship.Post("/end-friendship/:id", handlers.EndFriendship)
+	friendship.Get("/friends-list", handlers.GetFriendsList)
 
 	log.Fatal(app.Listen(":3000"))
 }
