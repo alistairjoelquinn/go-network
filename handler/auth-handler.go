@@ -24,6 +24,7 @@ var tokenSecret = jwtBuild{
 
 func CheckUserStatus(c *fiber.Ctx) error {
 	token := c.Cookies("token", "")
+	log.Println("token in check status", token)
 	if token == "" {
 		return c.JSON(fiber.Map{
 			"userId": "",
@@ -43,6 +44,7 @@ func CheckUserStatus(c *fiber.Ctx) error {
 			"userId": "",
 		})
 	}
+	log.Println("userid in check status", userId)
 
 	return c.JSON(fiber.Map{
 		"userId": userId,
@@ -138,8 +140,15 @@ func LogUserIn(c *fiber.Ctx) error {
 }
 
 func LogUserOut(c *fiber.Ctx) error {
+	log.Println("LOGOUT")
 	c.ClearCookie("token")
-	return nil
+
+	cookie := new(fiber.Cookie)
+	cookie.Name = "test"
+	cookie.Value = "COOKIE"
+	c.Cookie(cookie)
+
+	return c.Redirect("/")
 }
 
 func CheckEmailForReset(c *fiber.Ctx) error {
