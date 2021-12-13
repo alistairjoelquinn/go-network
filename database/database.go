@@ -59,20 +59,12 @@ func (m DB) GetUserPasswordFromEmail(email string) (*model.LogUserIn, error) {
 
 	var response model.LogUserIn
 
-	rows, err := m.db.QueryContext(ctx, query, email)
+	err := m.db.QueryRowContext(ctx, query, email).Scan(
+		&response.HashedPassword,
+		&response.ID,
+	)
 	if err != nil {
 		return &response, err
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		if err := rows.Scan(
-			&response.HashedPassword,
-			&response.ID,
-		); err != nil {
-			log.Println("response", response)
-			return &response, err
-		}
 	}
 
 	return &response, nil
@@ -90,6 +82,7 @@ func (m DB) GetUserData(id string) (*model.User, error) {
 	var user model.User
 
 	rows, err := m.db.QueryContext(ctx, query, id)
+	log.Println("rows", rows)
 	if err != nil {
 		return &user, err
 	}
@@ -103,7 +96,7 @@ func (m DB) GetUserData(id string) (*model.User, error) {
 			&user.Image,
 			&user.Bio,
 		); err != nil {
-			log.Println("response", user)
+			log.Println("response error", user)
 			return &user, err
 		}
 	}

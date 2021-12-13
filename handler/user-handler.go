@@ -10,15 +10,17 @@ import (
 
 func GetUserData(c *fiber.Ctx) error {
 	userId, err := util.GetIdFromToken(c)
+	log.Println("userId, err", userId, err)
+
 	if err != nil {
 		return c.JSON(fiber.Map{"success": "false"})
 	}
 
 	user, err := database.DBModel.GetUserData(userId)
+	log.Println("user, err", user, err)
 	if err != nil {
 		return c.JSON(fiber.Map{"success": "false"})
 	}
-	log.Println("user", user)
 
 	return c.JSON(fiber.Map{
 		"success": "true",
