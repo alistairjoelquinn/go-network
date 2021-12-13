@@ -82,3 +82,36 @@ func (m DB) GetUserPasswordFromEmail(email string) (*model.LogUserIn, error) {
 
 	return &response, nil
 }
+
+func (m DB) GetUserData(id string) (*model.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `
+		SELECT id, first, last, image, bio FROM users 
+		WHERE id = $1
+	`
+
+	var user model.User
+
+	rows, err := m.db.QueryContext(ctx, query, id)
+	if err != nil {
+		return &user, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		if err := rows.Scan(
+			&user.ID,
+			&user.First,
+			&user.Last,
+			&user.Image,
+			&user.Bio,
+		); err != nil {
+			log.Println("response", user)
+			return &user, err
+		}
+	}
+
+	return &user, nil
+}
