@@ -3,12 +3,26 @@ package handler
 import (
 	"log"
 
+	"github.com/alistairjoelquinn/go-network/database"
+	"github.com/alistairjoelquinn/go-network/util"
 	"github.com/gofiber/fiber/v2"
 )
 
 func GetUserData(c *fiber.Ctx) error {
-	log.Println("getting user data")
-	return nil
+	userId, err := util.GetIdFromToken(c)
+	if err != nil {
+		return c.JSON(fiber.Map{"success": "false"})
+	}
+
+	user, err := database.DBModel.GetUserData(userId)
+	if err != nil {
+		return c.JSON(fiber.Map{"success": "false"})
+	}
+
+	return c.JSON(fiber.Map{
+		"success": "true",
+		"data":    user,
+	})
 }
 
 func UploaderUserImage(c *fiber.Ctx) error {

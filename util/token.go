@@ -32,6 +32,7 @@ func GetIdFromToken(c *fiber.Ctx) (string, error) {
 		return "", tokenErr
 	}
 
+	// if possible to call parseInt without err then id is valid integer
 	_, err = strconv.ParseInt(claims.Subject, 10, 64)
 	if err != nil {
 		return "", tokenErr

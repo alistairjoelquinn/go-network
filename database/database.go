@@ -9,11 +9,6 @@ import (
 	"github.com/alistairjoelquinn/go-network/model"
 )
 
-// DB gorm connector
-type Login struct {
-	hashedPassword string
-	id             string
-}
 type DB struct {
 	db *sql.DB
 }
