@@ -16,6 +16,6 @@ type User struct {
 	ID    string `json:"id"`
 	First string `json:"first"`
 	Last  string `json:"last"`
-	Image string `json:"image"`
-	Bio   string `json:"bio"`
+	Image string `json:"image,omitempty"`
+	Bio   string `json:"bio,omitempty"`
 }

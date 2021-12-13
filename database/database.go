@@ -3,7 +3,6 @@ package database
 import (
 	"context"
 	"database/sql"
-	"log"
 	"time"
 
 	"github.com/alistairjoelquinn/go-network/model"
@@ -81,24 +80,15 @@ func (m DB) GetUserData(id string) (*model.User, error) {
 
 	var user model.User
 
-	rows, err := m.db.QueryContext(ctx, query, id)
-	log.Println("rows", rows)
+	err := m.db.QueryRowContext(ctx, query, id).Scan(
+		&user.ID,
+		&user.First,
+		&user.Last,
+		&user.Image,
+		&user.Bio,
+	)
 	if err != nil {
 		return &user, err
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		if err := rows.Scan(
-			&user.ID,
-			&user.First,
-			&user.Last,
-			&user.Image,
-			&user.Bio,
-		); err != nil {
-			log.Println("response error", user)
-			return &user, err
-		}
 	}
 
 	return &user, nil
