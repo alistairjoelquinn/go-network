@@ -3,7 +3,6 @@ package handler
 import (
 	"fmt"
 	"log"
-	"strconv"
 	"time"
 
 	"github.com/alistairjoelquinn/go-network/database"
@@ -23,29 +22,13 @@ var tokenSecret = jwtBuild{
 }
 
 func CheckUserStatus(c *fiber.Ctx) error {
-	token := c.Cookies("token", "")
-	log.Println("token in check status", token)
-	if token == "" {
-		return c.JSON(fiber.Map{
-			"userId": "",
-		})
-	}
-
-	claims, err := jwt.HMACCheck([]byte(token), []byte(tokenSecret.value))
-	if err != nil || !claims.Valid(time.Now()) || !claims.AcceptAudience("localhost:3000") || claims.Issuer != "localhost:3000" {
-		c.ClearCookie("token")
-		return c.JSON(fiber.Map{
-			"userId": "",
-		})
-	}
-	log.Println("claims", claims.Subject)
-
-	userId, err := strconv.ParseInt(claims.Subject, 10, 64)
+	userId, err := util.GetIdFromToken(c)
 	if err != nil {
 		return c.JSON(fiber.Map{
 			"userId": "",
 		})
 	}
+
 	log.Println("userid in check status", userId)
 
 	return c.JSON(fiber.Map{
@@ -118,30 +101,12 @@ func LogUserIn(c *fiber.Ctx) error {
 		})
 	}
 
-	var claims jwt.Claims
-	claims.Subject = fmt.Sprint(loginVals.ID)
-	claims.Issued = jwt.NewNumericTime(time.Now())
-	claims.NotBefore = jwt.NewNumericTime(time.Now())
-	claims.Expires = jwt.NewNumericTime(time.Now().Add(24 * time.Hour))
-	claims.Issuer = "localhost:3000"
-	claims.Audiences = []string{"localhost:3000"}
-
-	jwtBytes, err := claims.HMACSign(jwt.HS256, []byte(tokenSecret.value))
+	err = util.SetTokenAsCookie(c, loginVals.ID)
 	if err != nil {
 		return c.JSON(fiber.Map{
 			"success": "false",
 		})
 	}
-
-	cookie := new(fiber.Cookie)
-	cookie.Name = "token"
-	cookie.Value = string(jwtBytes)
-	c.Cookie(cookie)
-
-	cookie2 := new(fiber.Cookie)
-	cookie.Name = "test"
-	cookie.Value = "this"
-	c.Cookie(cookie2)
 
 	return c.JSON(fiber.Map{"success": "true"})
 }
