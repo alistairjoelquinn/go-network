@@ -33,10 +33,12 @@ func CheckUserStatus(c *fiber.Ctx) error {
 
 	claims, err := jwt.HMACCheck([]byte(token), []byte(tokenSecret.value))
 	if err != nil || !claims.Valid(time.Now()) || !claims.AcceptAudience("localhost:3000") || claims.Issuer != "localhost:3000" {
+		c.ClearCookie("token")
 		return c.JSON(fiber.Map{
 			"userId": "",
 		})
 	}
+	log.Println("claims", claims.Subject)
 
 	userId, err := strconv.ParseInt(claims.Subject, 10, 64)
 	if err != nil {
@@ -136,6 +138,11 @@ func LogUserIn(c *fiber.Ctx) error {
 	cookie.Value = string(jwtBytes)
 	c.Cookie(cookie)
 
+	cookie2 := new(fiber.Cookie)
+	cookie.Name = "test"
+	cookie.Value = "this"
+	c.Cookie(cookie2)
+
 	return c.JSON(fiber.Map{"success": "true"})
 }
 
@@ -143,12 +150,7 @@ func LogUserOut(c *fiber.Ctx) error {
 	log.Println("LOGOUT")
 	c.ClearCookie("token")
 
-	cookie := new(fiber.Cookie)
-	cookie.Name = "test"
-	cookie.Value = "COOKIE"
-	c.Cookie(cookie)
-
-	return c.Redirect("/")
+	return c.JSON(fiber.Map{"logout": "true"})
 }
 
 func CheckEmailForReset(c *fiber.Ctx) error {
