@@ -26,8 +26,6 @@ func CheckUserStatus(c *fiber.Ctx) error {
 		})
 	}
 
-	log.Println("userid in check status", userId)
-
 	return c.JSON(fiber.Map{
 		"userId": userId,
 	})
@@ -75,8 +73,6 @@ func LogUserIn(c *fiber.Ctx) error {
 			"success": "false",
 		})
 	}
-
-	log.Println(loginVals.HashedPassword, l.Password)
 
 	err = bcrypt.CompareHashAndPassword([]byte(loginVals.HashedPassword), []byte(l.Password))
 	if err != nil {

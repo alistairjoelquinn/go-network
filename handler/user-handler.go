@@ -18,6 +18,7 @@ func GetUserData(c *fiber.Ctx) error {
 	if err != nil {
 		return c.JSON(fiber.Map{"success": "false"})
 	}
+	log.Println("user", user)
 
 	return c.JSON(fiber.Map{
 		"success": "true",
