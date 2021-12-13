@@ -29,19 +29,14 @@ func (m DB) AddNewUser(first string, last string, email string, hashedPass strin
 		VALUES ($1, $2, $3, $4)
 		RETURNING id
 	`
-	rows, err := m.db.QueryContext(ctx, query, first, last, email, hashedPass)
-	if err != nil {
-		return "", err
-	}
-	defer rows.Close()
 
 	var id string
-	for rows.Next() {
-		if err := rows.Scan(
-			&id,
-		); err != nil {
-			return "", err
-		}
+
+	err := m.db.QueryRowContext(ctx, query, first, last, email, hashedPass).Scan(
+		&id,
+	)
+	if err != nil {
+		return "", err
 	}
 
 	return id, nil
