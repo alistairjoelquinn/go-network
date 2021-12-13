@@ -13,9 +13,9 @@ type LogUserIn struct {
 }
 
 type User struct {
-	ID    string `json:"id"`
-	First string `json:"first"`
-	Last  string `json:"last"`
-	Image string `json:"image,omitempty"`
-	Bio   string `json:"bio,omitempty"`
+	ID    string  `json:"id"`
+	First string  `json:"first"`
+	Last  string  `json:"last"`
+	Image *string `json:"image"`
+	Bio   *string `json:"bio"`
 }

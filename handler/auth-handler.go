@@ -45,16 +45,12 @@ func CreateNewUser(c *fiber.Ctx) error {
 
 	id, err := database.DBModel.AddNewUser(n.First, n.Last, n.Email, string(hashedPassword))
 	if err != nil {
-		return c.JSON(fiber.Map{
-			"success": "false",
-		})
+		return c.SendStatus(500)
 	}
 
 	err = util.SetTokenAsCookie(c, id)
 	if err != nil {
-		return c.JSON(fiber.Map{
-			"success": "false",
-		})
+		return c.SendStatus(500)
 	}
 
 	return c.JSON(fiber.Map{"success": "true"})
@@ -69,23 +65,17 @@ func LogUserIn(c *fiber.Ctx) error {
 
 	loginVals, err := database.DBModel.GetUserPasswordFromEmail(l.Email)
 	if err != nil {
-		return c.JSON(fiber.Map{
-			"success": "false",
-		})
+		return c.SendStatus(401)
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(loginVals.HashedPassword), []byte(l.Password))
 	if err != nil {
-		return c.JSON(fiber.Map{
-			"success": "false",
-		})
+		return c.SendStatus(401)
 	}
 
 	err = util.SetTokenAsCookie(c, loginVals.ID)
 	if err != nil {
-		return c.JSON(fiber.Map{
-			"success": "false",
-		})
+		return c.SendStatus(500)
 	}
 
 	return c.JSON(fiber.Map{"success": "true"})

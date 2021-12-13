@@ -10,22 +10,17 @@ import (
 
 func GetUserData(c *fiber.Ctx) error {
 	userId, err := util.GetIdFromToken(c)
-	log.Println("userId, err", userId, err)
 
 	if err != nil {
-		return c.JSON(fiber.Map{"success": "false"})
+		return c.SendStatus(500)
 	}
 
 	user, err := database.DBModel.GetUserData(userId)
-	log.Println("user, err", user, err)
 	if err != nil {
-		return c.JSON(fiber.Map{"success": "false"})
+		return c.SendStatus(500)
 	}
 
-	return c.JSON(fiber.Map{
-		"success": "true",
-		"data":    user,
-	})
+	return c.JSON(user)
 }
 
 func UploaderUserImage(c *fiber.Ctx) error {
