@@ -1,15 +1,12 @@
 package handler
 
 import (
-	"fmt"
 	"log"
-	"time"
 
 	"github.com/alistairjoelquinn/go-network/database"
 	"github.com/alistairjoelquinn/go-network/model"
 	"github.com/alistairjoelquinn/go-network/util"
 	"github.com/gofiber/fiber/v2"
-	"github.com/pascaldekloe/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -55,25 +52,12 @@ func CreateNewUser(c *fiber.Ctx) error {
 		})
 	}
 
-	var claims jwt.Claims
-	claims.Subject = fmt.Sprint(id)
-	claims.Issued = jwt.NewNumericTime(time.Now())
-	claims.NotBefore = jwt.NewNumericTime(time.Now())
-	claims.Expires = jwt.NewNumericTime(time.Now().Add(24 * time.Hour))
-	claims.Issuer = "localhost:3000"
-	claims.Audiences = []string{"localhost:3000"}
-
-	jwtBytes, err := claims.HMACSign(jwt.HS256, []byte(tokenSecret.value))
+	err = util.SetTokenAsCookie(c, id)
 	if err != nil {
 		return c.JSON(fiber.Map{
 			"success": "false",
 		})
 	}
-
-	cookie := new(fiber.Cookie)
-	cookie.Name = "token"
-	cookie.Value = string(jwtBytes)
-	c.Cookie(cookie)
 
 	return c.JSON(fiber.Map{"success": "true"})
 }
@@ -112,7 +96,6 @@ func LogUserIn(c *fiber.Ctx) error {
 }
 
 func LogUserOut(c *fiber.Ctx) error {
-	log.Println("LOGOUT")
 	c.ClearCookie("token")
 
 	return c.JSON(fiber.Map{"logout": "true"})
