@@ -24,7 +24,8 @@ func GetUserData(c *fiber.Ctx) error {
 }
 
 func UploaderUserImage(c *fiber.Ctx) error {
-	log.Println("upload user image")
+	util.SaveImageFile(c)
+
 	return nil
 }
 

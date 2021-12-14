@@ -16,7 +16,7 @@ func SetupRoutes(app *fiber.App) {
 
 	user := app.Group(("/user"))
 	user.Get("/get-data", handler.GetUserData)
-	user.Get("/upload", handler.UploaderUserImage)
+	user.Post("/upload", handler.UploaderUserImage)
 	user.Get("/set-bio", handler.SetUserBio)
 	user.Get("/recent-users", handler.GetRecentUsers)
 	user.Get("/user-search/:q", handler.SearchForUsers)
