@@ -24,7 +24,12 @@ func GetUserData(c *fiber.Ctx) error {
 }
 
 func UploaderUserImage(c *fiber.Ctx) error {
-	util.SaveImageFile(c)
+	image, err := util.SaveImageFile(c)
+	if err != nil {
+		return c.JSON(fiber.Map{"status": 500, "message": "error saving file to disk", "data": nil})
+	}
+
+	log.Println("image", image)
 
 	return nil
 }
