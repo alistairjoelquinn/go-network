@@ -2,6 +2,7 @@ package util
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -13,16 +14,21 @@ func UploadImage(filename string) error {
 	sess := session.Must(session.NewSession())
 	uploader := s3manager.NewUploader(sess)
 
-	f, err := os.Open(filename)
+	log.Println("filename", filename)
+
+	f, err := os.Open(fmt.Sprintf("/uploads/%s", filename))
 	if err != nil {
 		return fmt.Errorf("failed to open file %q, %v", filename, err)
 	}
 
-	_, err = uploader.Upload(&s3manager.UploadInput{
+	log.Println("file opened", f)
+	results, err := uploader.Upload(&s3manager.UploadInput{
 		Bucket: aws.String(Env("AWS_BUCKET")),
 		Key:    aws.String(Env("AWS_KEY")),
 		Body:   f,
 	})
+	log.Println("results", results)
+
 	if err != nil {
 		return fmt.Errorf("failed to upload file, %v", err)
 	}

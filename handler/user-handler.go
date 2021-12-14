@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/alistairjoelquinn/go-network/database"
@@ -29,9 +30,14 @@ func UploaderUserImage(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{"status": 500, "message": "error saving file to disk", "data": nil})
 	}
 
-	log.Println("image", image)
+	err = util.UploadImage(image)
+	if err != nil {
+		return c.JSON(fiber.Map{"status": 500, "message": "error uploading image to cloud", "data": nil})
+	}
 
-	return nil
+	return c.JSON(fiber.Map{
+		"image": fmt.Sprintf("https://s3.amazonaws.com/%s/%s", util.Env("AWS_BUCKET"), image),
+	})
 }
 
 func SetUserBio(c *fiber.Ctx) error {
