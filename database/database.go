@@ -88,3 +88,17 @@ func (m DB) GetUserData(id string) (*model.User, error) {
 
 	return &user, nil
 }
+
+func (m DB) AddNewUserImage(userId string, imageUrl string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := "UPDATE users SET image = $2 WHERE id = $1"
+
+	_, err := m.db.ExecContext(ctx, query, userId, imageUrl)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
