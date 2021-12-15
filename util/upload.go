@@ -14,20 +14,19 @@ func UploadImage(filename string) error {
 	sess := session.Must(session.NewSession())
 	uploader := s3manager.NewUploader(sess)
 
-	log.Println("filename", filename)
+	imageFilePath := fmt.Sprintf("%s/%s", Env("UPLOAD_PATH"), filename)
 
-	f, err := os.Open(fmt.Sprintf("/uploads/%s", filename))
+	f, err := os.Open(imageFilePath)
 	if err != nil {
 		return fmt.Errorf("failed to open file %q, %v", filename, err)
 	}
 
-	log.Println("file opened", f)
 	results, err := uploader.Upload(&s3manager.UploadInput{
 		Bucket: aws.String(Env("AWS_BUCKET")),
 		Key:    aws.String(Env("AWS_KEY")),
 		Body:   f,
 	})
-	log.Println("results", results)
+	log.Println("results", results, err)
 
 	if err != nil {
 		return fmt.Errorf("failed to upload file, %v", err)
