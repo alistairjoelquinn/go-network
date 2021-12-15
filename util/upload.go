@@ -2,36 +2,37 @@ package util
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
-func UploadImage(filename string) error {
-	sess := session.Must(session.NewSession())
-	uploader := s3manager.NewUploader(sess)
-
+func UploadImage(filename string) (string, error) {
 	imageFilePath := fmt.Sprintf("%s/%s", Env("UPLOAD_PATH"), filename)
 
 	f, err := os.Open(imageFilePath)
 	if err != nil {
-		return fmt.Errorf("failed to open file %q, %v", filename, err)
+		return "", err
 	}
 
-	results, err := uploader.Upload(&s3manager.UploadInput{
+	s3Session := session.Must(session.NewSession(&aws.Config{
+		Region:      aws.String("us-east-1"),
+		Credentials: credentials.NewStaticCredentials(Env("AWS_KEY"), Env("AWS_SECRET"), ""),
+	}))
+
+	uploader := s3manager.NewUploader(s3Session)
+
+	result, err := uploader.Upload(&s3manager.UploadInput{
 		Bucket: aws.String(Env("AWS_BUCKET")),
-		Key:    aws.String(Env("AWS_KEY")),
+		Key:    aws.String(filename),
 		Body:   f,
 	})
-	log.Println("results", results, err)
-
 	if err != nil {
-		return fmt.Errorf("failed to upload file, %v", err)
+		return "", err
 	}
-	fmt.Printf("file uploaded to, %s\n", filename)
 
-	return nil
+	return result.Location, nil
 }
