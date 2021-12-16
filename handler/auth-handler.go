@@ -111,10 +111,27 @@ func CheckEmailForReset(c *fiber.Ctx) error {
 
 	util.SendResetEmail(code, l.Email)
 
-	return nil
+	return c.JSON(fiber.Map{"emailSent": "true"})
 }
 
 func VerifyAndResetUsersPassword(c *fiber.Ctx) error {
-	log.Println("verify and reset users password")
-	return nil
+	l := new(model.CheckPasswordCode)
+
+	if err := c.BodyParser(l); err != nil {
+		log.Println(err)
+		return c.SendStatus(500)
+	}
+
+	code, err := database.DBModel.PasswordResetCodeCheck(l.Email)
+	if err != nil {
+		log.Println(err)
+		return c.SendStatus(500)
+	}
+
+	if l.SecretCodeTyped == code {
+
+		return c.JSON(fiber.Map{"passwordUpdated": "true"})
+	} else {
+		return c.SendStatus(500)
+	}
 }

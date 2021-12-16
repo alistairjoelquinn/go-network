@@ -102,3 +102,24 @@ func (m DB) AddNewUserImage(userId string, imageUrl string) error {
 
 	return nil
 }
+
+func (m DB) PasswordResetCodeCheck(email string) (string, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `
+		SELECT code FROM password_reset_codes
+		WHERE CURRENT_TIMESTAMP - create_at < INTERVAL '10 minutes' AND email = $1
+		ORDER BY id DESC
+		LIMIT 1
+	`
+
+	var code string
+
+	err := m.db.QueryRowContext(ctx, query, email).Scan(&code)
+	if err != nil {
+		return "", err
+	}
+
+	return code, nil
+}

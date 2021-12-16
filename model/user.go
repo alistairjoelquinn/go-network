@@ -23,3 +23,9 @@ type User struct {
 type CheckEmail struct {
 	Email string `json:"email"`
 }
+
+type CheckPasswordCode struct {
+	Email           string `json:"email"`
+	SecretCodeTyped string `json:"secretCodeTyped"`
+	NewPassword     string `json:"newPassword"`
+}

@@ -2,7 +2,6 @@ package util
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -19,7 +18,6 @@ func SendResetEmail(code string, email string) error {
 		},
 	})
 	if err != nil {
-		log.Println(err)
 		return err
 	}
 
@@ -48,7 +46,6 @@ func SendResetEmail(code string, email string) error {
 
 	_, err = svc.SendEmail(input)
 	if err != nil {
-		log.Println(err)
 		return err
 	}
 
