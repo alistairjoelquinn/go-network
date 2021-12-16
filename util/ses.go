@@ -28,7 +28,7 @@ func SendResetEmail(code string, email string) error {
 	input := &ses.SendEmailInput{
 		Destination: &ses.Destination{
 			ToAddresses: []*string{
-				aws.String("alistairjoelquinn@gmail.com"),
+				aws.String(Env("EMAIL")),
 			},
 		},
 		Message: &ses.Message{
@@ -43,7 +43,7 @@ func SendResetEmail(code string, email string) error {
 				Data:    aws.String("Password Reset Code"),
 			},
 		},
-		Source: aws.String("alistairjoelquinn@gmail.com"),
+		Source: aws.String(Env("EMAIL")),
 	}
 
 	_, err = svc.SendEmail(input)
