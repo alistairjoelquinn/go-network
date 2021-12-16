@@ -104,7 +104,12 @@ func CheckEmailForReset(c *fiber.Ctx) error {
 		return c.SendStatus(500)
 	}
 
-	log.Println("random string to use a code", code)
+	err = database.DBModel.InsertResetCode(code, l.Email)
+	if err != nil {
+		return c.SendStatus(500)
+	}
+
+	log.Println("code inserted in db", code)
 
 	return nil
 }
