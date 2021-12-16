@@ -37,3 +37,21 @@ func (m DB) InsertResetCode(code string, email string) error {
 
 	return nil
 }
+
+func (m DB) UpdatePassword(email string, password string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `
+		UPDATE users SET password = $2
+		WHERE email = $1
+	`
+
+	_, err := m.db.ExecContext(ctx, query, email, password)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	return nil
+}

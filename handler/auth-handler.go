@@ -118,17 +118,25 @@ func VerifyAndResetUsersPassword(c *fiber.Ctx) error {
 	l := new(model.CheckPasswordCode)
 
 	if err := c.BodyParser(l); err != nil {
-		log.Println(err)
 		return c.SendStatus(500)
 	}
 
 	code, err := database.DBModel.PasswordResetCodeCheck(l.Email)
 	if err != nil {
-		log.Println(err)
 		return c.SendStatus(500)
 	}
 
 	if l.SecretCodeTyped == code {
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(l.NewPassword), bcrypt.DefaultCost)
+		if err != nil {
+			panic(err)
+		}
+
+		err = database.DBModel.UpdatePassword(l.Email, string(hashedPassword))
+		if err != nil {
+			log.Println(err)
+			return c.SendStatus(500)
+		}
 
 		return c.JSON(fiber.Map{"passwordUpdated": "true"})
 	} else {
