@@ -109,7 +109,7 @@ func CheckEmailForReset(c *fiber.Ctx) error {
 		return c.SendStatus(500)
 	}
 
-	log.Println("code inserted in db", code)
+	util.SendResetEmail(code, l.Email)
 
 	return nil
 }
