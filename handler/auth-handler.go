@@ -88,7 +88,17 @@ func LogUserOut(c *fiber.Ctx) error {
 }
 
 func CheckEmailForReset(c *fiber.Ctx) error {
-	log.Println("check email for reset")
+	l := new(model.CheckEmail)
+
+	if err := c.BodyParser(l); err != nil {
+		return c.SendStatus(500)
+	}
+
+	err := database.DBModel.CheckEmailForReset(l.Email)
+	if err != nil {
+		return c.SendStatus(500)
+	}
+
 	return nil
 }
 

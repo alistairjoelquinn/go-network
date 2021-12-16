@@ -19,3 +19,7 @@ type User struct {
 	Image *string `json:"image"`
 	Bio   *string `json:"bio"`
 }
+
+type CheckEmail struct {
+	Email string `json:"email"`
+}
