@@ -99,6 +99,13 @@ func CheckEmailForReset(c *fiber.Ctx) error {
 		return c.SendStatus(500)
 	}
 
+	code, err := util.GenerateRandomString(6)
+	if err != nil {
+		return c.SendStatus(500)
+	}
+
+	log.Println("random string to use a code", code)
+
 	return nil
 }
 
