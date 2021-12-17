@@ -90,11 +90,14 @@ func SearchForUsers(c *fiber.Ctx) error {
 	if err != nil {
 		return c.SendStatus(401)
 	}
-	log.Println("q, userId", q, userId)
 
 	users, err := database.DBModel.UserSearch(q, userId)
 	if err != nil {
-		return c.SendStatus(500)
+		return c.JSON(fiber.Map{})
+	}
+	if len(*users) == 0 {
+		var nilUser = []model.RecentUsers{}
+		return c.JSON(nilUser)
 	}
 
 	return c.JSON(users)

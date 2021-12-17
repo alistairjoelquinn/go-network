@@ -61,3 +61,40 @@ func (m DB) RecentUserSearch(id string) (*[]model.RecentUsers, error) {
 
 	return &recentUsers, nil
 }
+
+func (m DB) UserSearch(q string, id string) (*[]model.RecentUsers, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `
+		SELECT first, last, id, image FROM users
+		WHERE first ILIKE $1 AND users.id <> $2
+		OR last ILIKE $1 AND users.id <> $2
+		OR concat(first, ' ', last) ILIKE $1 AND users.id <> $2
+	`
+
+	var recentUsers []model.RecentUsers
+
+	rows, err := m.db.QueryContext(ctx, query, q+"%", id)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var user model.RecentUsers
+		if err := rows.Scan(
+			&user.First,
+			&user.Last,
+			&user.ID,
+			&user.Image,
+		); err != nil {
+			log.Println(err)
+			return nil, err
+		}
+		recentUsers = append(recentUsers, user)
+	}
+
+	return &recentUsers, nil
+}
