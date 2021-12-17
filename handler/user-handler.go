@@ -84,8 +84,20 @@ func GetRecentUsers(c *fiber.Ctx) error {
 }
 
 func SearchForUsers(c *fiber.Ctx) error {
-	log.Println("searach for users")
-	return nil
+	q := c.Params("q")
+
+	userId, err := util.GetIdFromToken(c)
+	if err != nil {
+		return c.SendStatus(401)
+	}
+	log.Println("q, userId", q, userId)
+
+	users, err := database.DBModel.UserSearch(q, userId)
+	if err != nil {
+		return c.SendStatus(500)
+	}
+
+	return c.JSON(users)
 }
 
 func GetOtherUser(c *fiber.Ctx) error {
