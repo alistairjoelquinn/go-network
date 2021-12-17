@@ -61,14 +61,12 @@ func SetUserBio(c *fiber.Ctx) error {
 		return c.SendStatus(404)
 	}
 
-	bio, err := database.DBModel.UpdateUserBio(userId)
+	err = database.DBModel.UpdateUserBio(userId, b.Bio)
 	if err != nil {
 		return c.SendStatus(500)
 	}
 
-	return c.JSON(bio)
-
-	return nil
+	return c.JSON(b)
 }
 
 func GetRecentUsers(c *fiber.Ctx) error {
