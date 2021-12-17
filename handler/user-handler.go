@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"log"
-
 	"github.com/alistairjoelquinn/go-network/database"
 	"github.com/alistairjoelquinn/go-network/model"
 	"github.com/alistairjoelquinn/go-network/util"
@@ -104,6 +102,19 @@ func SearchForUsers(c *fiber.Ctx) error {
 }
 
 func GetOtherUser(c *fiber.Ctx) error {
-	log.Println("get other user")
-	return nil
+	userId, err := util.GetIdFromToken(c)
+	if err != nil {
+		return c.SendStatus(401)
+	}
+
+	o := new(model.OtherUserID)
+	if err := c.BodyParser(o); err != nil {
+		return c.SendStatus(404)
+	}
+
+	if userId != o.ID {
+
+	} else {
+		return c.JSON(fiber.Map{"currentUser": true})
+	}
 }

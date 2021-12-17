@@ -40,3 +40,7 @@ type RecentUsers struct {
 	Last  string  `json:"last"`
 	Image *string `json:"image"`
 }
+
+type OtherUserID struct {
+	ID string `json:"id"`
+}
