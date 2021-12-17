@@ -33,3 +33,10 @@ type CheckPasswordCode struct {
 type UpdatedBio struct {
 	Bio string `json:"bio"`
 }
+
+type RecentUsers struct {
+	ID    string  `json:"id"`
+	First string  `json:"first"`
+	Last  string  `json:"last"`
+	Image *string `json:"image"`
+}

@@ -70,7 +70,16 @@ func SetUserBio(c *fiber.Ctx) error {
 }
 
 func GetRecentUsers(c *fiber.Ctx) error {
-	log.Println("get recent users")
+	userId, err := util.GetIdFromToken(c)
+	if err != nil {
+		return c.SendStatus(401)
+	}
+
+	_, err = database.DBModel.RecentUserSearch(userId)
+	if err != nil {
+		return c.SendStatus(500)
+	}
+
 	return nil
 }
 
