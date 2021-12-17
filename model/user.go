@@ -29,3 +29,7 @@ type CheckPasswordCode struct {
 	SecretCodeTyped string `json:"secretCodeTyped"`
 	NewPassword     string `json:"newPassword"`
 }
+
+type UpdatedBio struct {
+	Bio string `json:"bio"`
+}

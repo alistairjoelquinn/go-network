@@ -4,13 +4,13 @@ import (
 	"log"
 
 	"github.com/alistairjoelquinn/go-network/database"
+	"github.com/alistairjoelquinn/go-network/model"
 	"github.com/alistairjoelquinn/go-network/util"
 	"github.com/gofiber/fiber/v2"
 )
 
 func GetUserData(c *fiber.Ctx) error {
 	userId, err := util.GetIdFromToken(c)
-
 	if err != nil {
 		return c.SendStatus(500)
 	}
@@ -51,7 +51,23 @@ func UploaderUserImage(c *fiber.Ctx) error {
 }
 
 func SetUserBio(c *fiber.Ctx) error {
-	log.Println("set user bio")
+	userId, err := util.GetIdFromToken(c)
+	if err != nil {
+		return c.SendStatus(401)
+	}
+
+	b := new(model.UpdatedBio)
+	if err := c.BodyParser(b); err != nil {
+		return c.SendStatus(404)
+	}
+
+	bio, err := database.DBModel.UpdateUserBio(userId)
+	if err != nil {
+		return c.SendStatus(500)
+	}
+
+	return c.JSON(bio)
+
 	return nil
 }
 
