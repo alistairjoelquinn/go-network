@@ -75,12 +75,12 @@ func GetRecentUsers(c *fiber.Ctx) error {
 		return c.SendStatus(401)
 	}
 
-	_, err = database.DBModel.RecentUserSearch(userId)
+	users, err := database.DBModel.RecentUserSearch(userId)
 	if err != nil {
 		return c.SendStatus(500)
 	}
 
-	return nil
+	return c.JSON(users)
 }
 
 func SearchForUsers(c *fiber.Ctx) error {
