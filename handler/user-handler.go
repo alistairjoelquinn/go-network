@@ -107,13 +107,14 @@ func GetOtherUser(c *fiber.Ctx) error {
 		return c.SendStatus(401)
 	}
 
-	o := new(model.OtherUserID)
-	if err := c.BodyParser(o); err != nil {
-		return c.SendStatus(404)
-	}
+	o := c.Params("id")
 
-	if userId != o.ID {
-
+	if userId != o {
+		user, err := database.DBModel.GetOtherUserData(o)
+		if err != nil {
+			return c.SendStatus(500)
+		}
+		return c.JSON(user)
 	} else {
 		return c.JSON(fiber.Map{"currentUser": true})
 	}

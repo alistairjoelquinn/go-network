@@ -98,3 +98,26 @@ func (m DB) UserSearch(q string, id string) (*[]model.RecentUsers, error) {
 
 	return &recentUsers, nil
 }
+
+func (m DB) GetOtherUserData(id string) (*model.OtherUser, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := "SELECT first, last, image, bio, id as userId FROM users WHERE id = $1"
+
+	var otherUser model.OtherUser
+
+	err := m.db.QueryRowContext(ctx, query, id).Scan(
+		&otherUser.First,
+		&otherUser.Last,
+		&otherUser.Image,
+		&otherUser.Bio,
+		&otherUser.UserId,
+	)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return &otherUser, err
+}
