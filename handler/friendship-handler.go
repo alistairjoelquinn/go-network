@@ -38,5 +38,10 @@ func GetFriendsList(c *fiber.Ctx) error {
 	if err != nil {
 		return c.SendStatus(500)
 	}
+	if len(*users) == 0 {
+		log.Println("no friends")
+		return c.JSON(users)
+	}
+	log.Println("friends", users)
 	return c.JSON(users)
 }
