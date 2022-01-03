@@ -24,11 +24,13 @@ func UploadImage(filename string) (string, error) {
 	}))
 
 	uploader := s3manager.NewUploader(s3Session)
+	aclValue := "public-read"
 
 	result, err := uploader.Upload(&s3manager.UploadInput{
 		Bucket: aws.String(Env("AWS_BUCKET")),
 		Key:    aws.String(filename),
 		Body:   f,
+		ACL:    &aclValue,
 	})
 	if err != nil {
 		return "", err
