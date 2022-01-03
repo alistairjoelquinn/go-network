@@ -3,6 +3,7 @@ package handler
 import (
 	"log"
 
+	"github.com/alistairjoelquinn/go-network/util"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -27,6 +28,10 @@ func EndFriendship(c *fiber.Ctx) error {
 }
 
 func GetFriendsList(c *fiber.Ctx) error {
-	log.Println("get friends list")
+	userId, err := util.GetIdFromToken(c)
+	if err != nil {
+		return c.SendStatus(401)
+	}
+
 	return nil
 }
