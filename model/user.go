@@ -52,3 +52,12 @@ type OtherUser struct {
 	Image  *string `json:"image"`
 	Bio    *string `json:"bio"`
 }
+
+type RequestsFriends struct {
+	ID           string  `json:"id"`
+	First        string  `json:"first"`
+	Last         string  `json:"last"`
+	Image        *string `json:"image"`
+	Accepted     bool    `json:"accepted"`
+	FriendshipId string  `json:"friendship_id"`
+}
