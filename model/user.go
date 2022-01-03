@@ -54,10 +54,10 @@ type OtherUser struct {
 }
 
 type RequestsFriends struct {
-	ID           string  `json:"id"`
 	First        string  `json:"first"`
 	Last         string  `json:"last"`
 	Image        *string `json:"image"`
 	Accepted     bool    `json:"accepted"`
 	FriendshipId string  `json:"friendship_id"`
+	ID           string  `json:"id"`
 }

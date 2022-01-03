@@ -33,12 +33,12 @@ func (m DB) GetRequestsFriends(id string) (*[]model.RequestsFriends, error) {
 	for rows.Next() {
 		var user model.RequestsFriends
 		if err := rows.Scan(
-			&user.ID,
 			&user.First,
 			&user.Last,
 			&user.Image,
 			&user.Accepted,
 			&user.FriendshipId,
+			&user.ID,
 		); err != nil {
 			log.Println(err)
 			return nil, err
