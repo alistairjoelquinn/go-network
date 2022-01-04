@@ -85,17 +85,17 @@ func (m DB) AddFriendQuery(userId string, id string) (model.FStatus, error) {
 			RETURNING sender_id, recipient_id, accepted, id
 		`
 
-	var friendshipStatus model.FStatus
+	var addFriendNewStatus model.FStatus
 
 	err := m.db.QueryRowContext(ctx, query, userId, id).Scan(
-		&friendshipStatus.SenderId,
-		&friendshipStatus.RecipientId,
-		&friendshipStatus.Accepted,
-		&friendshipStatus.ID,
+		&addFriendNewStatus.SenderId,
+		&addFriendNewStatus.RecipientId,
+		&addFriendNewStatus.Accepted,
+		&addFriendNewStatus.ID,
 	)
 	if err != nil {
-		return friendshipStatus, err
+		return addFriendNewStatus, err
 	}
 
-	return friendshipStatus, nil
+	return addFriendNewStatus, nil
 }
