@@ -48,3 +48,30 @@ func (m DB) GetRequestsFriends(id string) (*[]model.RequestsFriends, error) {
 
 	return &requestsFriends, nil
 }
+
+func (m DB) FriendshipStatus(userId string, id string) (model.FStatus, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `
+			SELECT sender_id, recipient_id, accepted, id 
+			FROM friendships 
+			WHERE (recipient_id = $1 AND sender_id = $2)
+			OR (recipient_id = $2 AND sender_id = $1)
+		`
+
+	var friendshipStatus model.FStatus
+
+	err := m.db.QueryRowContext(ctx, query, userId, id).Scan(
+		&friendshipStatus.SenderId,
+		&friendshipStatus.RecipientId,
+		&friendshipStatus.Accepted,
+		&friendshipStatus.ID,
+	)
+	if err != nil {
+		log.Println(err)
+		return friendshipStatus, err
+	}
+
+	return friendshipStatus, nil
+}

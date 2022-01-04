@@ -61,3 +61,10 @@ type RequestsFriends struct {
 	FriendshipId string  `json:"friendship_id"`
 	ID           string  `json:"id"`
 }
+
+type FStatus struct {
+	SenderId    string `json:"sender_id"`
+	RecipientId string `json:"recipient_id"`
+	Accepted    bool   `json:"accepted"`
+	ID          string `json:"id"`
+}

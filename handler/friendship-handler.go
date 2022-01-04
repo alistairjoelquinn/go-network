@@ -13,27 +13,31 @@ func GetInitialFrienshipStatus(c *fiber.Ctx) error {
 		return c.SendStatus(401)
 	}
 
-	return nil
+	friendshipStatus, err := database.DBModel.FriendshipStatus(userId, id)
+	if err != nil {
+		return c.JSON(nil)
+	}
+	return c.JSON(friendshipStatus)
 }
 
 func AddFriend(c *fiber.Ctx) error {
-	id := c.Params("id")
-	userId, err := util.GetIdFromToken(c)
-	if err != nil {
-		return c.SendStatus(401)
-	}
+	// id := c.Params("id")
+	// userId, err := util.GetIdFromToken(c)
+	// if err != nil {
+	// 	return c.SendStatus(401)
+	// }
 
 	return nil
 }
 
 func AcceptFriend(c *fiber.Ctx) error {
-	id := c.Params("id")
+	// id := c.Params("id")
 
 	return nil
 }
 
 func EndFriendship(c *fiber.Ctx) error {
-	id := c.Params("id")
+	// id := c.Params("id")
 
 	return nil
 }
