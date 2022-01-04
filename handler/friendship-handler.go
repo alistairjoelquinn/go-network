@@ -21,13 +21,17 @@ func GetInitialFrienshipStatus(c *fiber.Ctx) error {
 }
 
 func AddFriend(c *fiber.Ctx) error {
-	// id := c.Params("id")
-	// userId, err := util.GetIdFromToken(c)
-	// if err != nil {
-	// 	return c.SendStatus(401)
-	// }
+	id := c.Params("id")
+	userId, err := util.GetIdFromToken(c)
+	if err != nil {
+		return c.SendStatus(401)
+	}
 
-	return nil
+	friendshipStatus, err := database.DBModel.AddFriendQuery(userId, id)
+	if err != nil {
+		return c.SendStatus(500)
+	}
+	return c.JSON(friendshipStatus)
 }
 
 func AcceptFriend(c *fiber.Ctx) error {

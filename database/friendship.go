@@ -69,7 +69,31 @@ func (m DB) FriendshipStatus(userId string, id string) (model.FStatus, error) {
 		&friendshipStatus.ID,
 	)
 	if err != nil {
-		log.Println(err)
+		return friendshipStatus, err
+	}
+
+	return friendshipStatus, nil
+}
+
+func (m DB) AddFriendQuery(userId string, id string) (model.FStatus, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `
+			INSERT INTO friendships (sender_id, recipient_id)
+			VALUES ($1, $2)
+			RETURNING sender_id, recipient_id, accepted, id
+		`
+
+	var friendshipStatus model.FStatus
+
+	err := m.db.QueryRowContext(ctx, query, userId, id).Scan(
+		&friendshipStatus.SenderId,
+		&friendshipStatus.RecipientId,
+		&friendshipStatus.Accepted,
+		&friendshipStatus.ID,
+	)
+	if err != nil {
 		return friendshipStatus, err
 	}
 
