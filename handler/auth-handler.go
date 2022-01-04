@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"log"
-
 	"github.com/alistairjoelquinn/go-network/database"
 	"github.com/alistairjoelquinn/go-network/model"
 	"github.com/alistairjoelquinn/go-network/util"
@@ -134,7 +132,6 @@ func VerifyAndResetUsersPassword(c *fiber.Ctx) error {
 
 		err = database.DBModel.UpdatePassword(l.Email, string(hashedPassword))
 		if err != nil {
-			log.Println(err)
 			return c.SendStatus(500)
 		}
 

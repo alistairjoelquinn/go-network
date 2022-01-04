@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"github.com/alistairjoelquinn/go-network/model"
@@ -40,7 +39,6 @@ func (m DB) RecentUserSearch(id string) (*[]model.RecentUsers, error) {
 
 	rows, err := m.db.QueryContext(ctx, query, id)
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
 	defer rows.Close()
@@ -53,7 +51,6 @@ func (m DB) RecentUserSearch(id string) (*[]model.RecentUsers, error) {
 			&user.ID,
 			&user.Image,
 		); err != nil {
-			log.Println(err)
 			return nil, err
 		}
 		recentUsers = append(recentUsers, user)
@@ -77,7 +74,6 @@ func (m DB) UserSearch(q string, id string) (*[]model.RecentUsers, error) {
 
 	rows, err := m.db.QueryContext(ctx, query, q+"%", id)
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
 	defer rows.Close()
@@ -90,7 +86,6 @@ func (m DB) UserSearch(q string, id string) (*[]model.RecentUsers, error) {
 			&user.ID,
 			&user.Image,
 		); err != nil {
-			log.Println(err)
 			return nil, err
 		}
 		recentUsers = append(recentUsers, user)
@@ -115,7 +110,6 @@ func (m DB) GetOtherUserData(id string) (*model.OtherUser, error) {
 		&otherUser.UserId,
 	)
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
 
