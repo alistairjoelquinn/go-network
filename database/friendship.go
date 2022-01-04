@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"github.com/alistairjoelquinn/go-network/model"
@@ -25,7 +24,6 @@ func (m DB) GetRequestsFriends(id string) (*[]model.RequestsFriends, error) {
 
 	rows, err := m.db.QueryContext(ctx, query, id)
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
 	defer rows.Close()
@@ -40,7 +38,6 @@ func (m DB) GetRequestsFriends(id string) (*[]model.RequestsFriends, error) {
 			&user.FriendshipId,
 			&user.ID,
 		); err != nil {
-			log.Println(err)
 			return nil, err
 		}
 		requestsFriends = append(requestsFriends, user)

@@ -26,6 +26,8 @@ func main() {
 
 	router.SetupRoutes(app)
 
+	app.Static("/*", "./public")
+
 	log.Fatal(app.Listen(":3000"))
 }
 

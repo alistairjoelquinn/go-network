@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"log"
 	"time"
 )
 
@@ -16,7 +15,6 @@ func (m DB) CheckEmailForReset(email string) error {
 
 	err := m.db.QueryRowContext(ctx, query, email).Scan(&id)
 	if err != nil {
-		log.Println(err)
 		return err
 	}
 
@@ -31,7 +29,6 @@ func (m DB) InsertResetCode(code string, email string) error {
 
 	_, err := m.db.ExecContext(ctx, query, code, email)
 	if err != nil {
-		log.Println(err)
 		return err
 	}
 
@@ -49,7 +46,6 @@ func (m DB) UpdatePassword(email string, password string) error {
 
 	_, err := m.db.ExecContext(ctx, query, email, password)
 	if err != nil {
-		log.Println(err)
 		return err
 	}
 
