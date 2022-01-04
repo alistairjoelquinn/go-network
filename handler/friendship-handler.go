@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"log"
-
 	"github.com/alistairjoelquinn/go-network/database"
 	"github.com/alistairjoelquinn/go-network/util"
 	"github.com/gofiber/fiber/v2"
@@ -38,20 +36,22 @@ func AddFriend(c *fiber.Ctx) error {
 
 func AcceptFriend(c *fiber.Ctx) error {
 	id := c.Params("id")
-	log.Println("ID", id)
 
 	acceptFriendNewStatus, err := database.DBModel.AcceptFriendQuery(id)
 	if err != nil {
-		log.Println(err, "ERROR")
 		return c.SendStatus(500)
 	}
 	return c.JSON(acceptFriendNewStatus)
 }
 
 func EndFriendship(c *fiber.Ctx) error {
-	// id := c.Params("id")
+	id := c.Params("id")
 
-	return nil
+	err := database.DBModel.RemoveFriendQuery(id)
+	if err != nil {
+		return c.SendStatus(500)
+	}
+	return c.SendStatus(200)
 }
 
 func GetFriendsList(c *fiber.Ctx) error {

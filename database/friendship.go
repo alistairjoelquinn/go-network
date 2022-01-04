@@ -125,3 +125,20 @@ func (m DB) AcceptFriendQuery(id string) (model.FStatus, error) {
 
 	return acceptFriendNewStatus, nil
 }
+
+func (m DB) RemoveFriendQuery(id string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `
+			DELETE FROM friendships
+			WHERE id = $1
+		`
+
+	_, err := m.db.ExecContext(ctx, query, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
