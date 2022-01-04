@@ -99,3 +99,29 @@ func (m DB) AddFriendQuery(userId string, id string) (model.FStatus, error) {
 
 	return addFriendNewStatus, nil
 }
+
+func (m DB) AcceptFriendQuery(id string) (model.FStatus, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `
+			UPDATE friendships 
+			SET accepted = true
+			WHERE id = $1 
+			RETURNING sender_id, recipient_id, accepted, id
+		`
+
+	var acceptFriendNewStatus model.FStatus
+
+	err := m.db.QueryRowContext(ctx, query, id).Scan(
+		&acceptFriendNewStatus.SenderId,
+		&acceptFriendNewStatus.RecipientId,
+		&acceptFriendNewStatus.Accepted,
+		&acceptFriendNewStatus.ID,
+	)
+	if err != nil {
+		return acceptFriendNewStatus, err
+	}
+
+	return acceptFriendNewStatus, nil
+}

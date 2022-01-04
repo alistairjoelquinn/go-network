@@ -31,16 +31,21 @@ func AddFriend(c *fiber.Ctx) error {
 
 	addFriendNewStatus, err := database.DBModel.AddFriendQuery(userId, id)
 	if err != nil {
-		log.Println(err, "ERROR")
 		return c.SendStatus(500)
 	}
 	return c.JSON(addFriendNewStatus)
 }
 
 func AcceptFriend(c *fiber.Ctx) error {
-	// id := c.Params("id")
+	id := c.Params("id")
+	log.Println("ID", id)
 
-	return nil
+	acceptFriendNewStatus, err := database.DBModel.AcceptFriendQuery(id)
+	if err != nil {
+		log.Println(err, "ERROR")
+		return c.SendStatus(500)
+	}
+	return c.JSON(acceptFriendNewStatus)
 }
 
 func EndFriendship(c *fiber.Ctx) error {
