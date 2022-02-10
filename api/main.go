@@ -16,11 +16,11 @@ func main() {
 	}
 	defer db.Close()
 
+	database.ModelInit(db)
+
 	app := fiber.New(fiber.Config{
 		ErrorHandler: routeErrorHandler,
 	})
-
-	database.ModelInit(db)
 
 	app.Static("/", "./public")
 
