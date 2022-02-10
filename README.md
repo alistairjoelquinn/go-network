@@ -15,6 +15,6 @@ In terms of functionality, routes are largely similar to their Node counterparts
 
 ![User password reset](https://res.cloudinary.com/dtirfwiy8/image/upload/v1644506343/go-network/reset_vevgrg.png)
 
-TODO: the final part of the project uses web sockets for instant chat. In the existing project, socket.io is being used for handling client - server communication. In the absence of a good server side socket.io v3 implementation, the decision has been made to re-write the existing client side code to utilise the native browser web socket API, 
+TODO: the final part of the project uses web sockets for instant chat. In the existing project, socket.io is being used for handling client - server communication. In the absence of a good server side socket.io v3 implementation, the decision has been made to re-write the existing client side code to utilise the native browser web socket API.
 
 ![Chat room](https://res.cloudinary.com/dtirfwiy8/image/upload/v1644506343/go-network/chat_htqawy.png)
