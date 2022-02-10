@@ -1,11 +1,11 @@
 Social Network Go Server
 ---
 
-In the final weeks at Spiced Academy students build a full stack social network application using React on the client and node on the server. Here is an alternative solution to the server API routes written in Go instead of Node.
+![User profile image](https://res.cloudinary.com/dtirfwiy8/image/upload/v1644506343/go-network/profile_jojn4h.png)
+
+In the final weeks at Spiced Academy students build a full stack social network application using React and Node / Express.js. Here is an alternative solution to the server API routes written in Go instead of Node. API routes have been written using Fiber due to it's similarity to Express. 
 
 Bcrypt is still being used for handling user password encryption. Once logged in or registered, unlike the Node server, JSON web tokens are being set in place of Node's cookie-session middleware.
-
-API routes have been written using Fiber due to it's similarity to Express. 
 
 In terms of functionality, routes are largely similar to their Node counterparts. The go AWS SDK has a very similar API to that in Node when handling image uploads or using the email service. 
 
